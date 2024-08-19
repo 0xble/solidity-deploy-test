@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@partydao/solidity-deploy": "https://github.com/PartyDAO/solidity-deploy.git#feat/store-abi-and-commit"
+  }
+}
