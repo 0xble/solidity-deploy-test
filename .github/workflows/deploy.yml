@@ -48,23 +48,21 @@ jobs:
         if: ${{ github.event.inputs.network == 'base-sepolia' }}
         run: echo "RPC_URL=${{ secrets.BASE_SEPOLIA_RPC_URL }}" >> $GITHUB_ENV
 
-      - name: Set GIT_TOKEN
-        run: echo "GIT_TOKEN=${{ secrets.GIT_TOKEN }}" >> $GITHUB_ENV
+      - name: Set EXPLORER_API_KEY for base chains
+        if: ${{ github.event.inputs.network == 'base' || github.event.inputs.network == 'base-sepolia' }}
+        run: echo "EXPLORER_API_KEY=${{ secrets.BASESCAN_API_KEY }}" >> $GITHUB_ENV
 
-      - name: Set DISCORD_WEBHOOK_URL
-        run: echo "DISCORD_WEBHOOK_URL=${{ secrets.DISCORD_WEBHOOK_URL }}" >> $GITHUB_ENV
+      - name: Set EXPLORER_API_KEY for other chains
+        if: ${{ github.event.inputs.network != 'base' && github.event.inputs.network != 'base-sepolia' }}
+        run: echo "EXPLORER_API_KEY=${{ secrets.ETHERSCAN_API_KEY }}" >> $GITHUB_ENV
 
       - name: Run Deploy
         run: |
-          npx solidity-deploy deploy ${{ github.event.inputs.contract }} --rpc ${{ env.RPC_URL }} --pk ${{ secrets.private_key }} --explorer-api-key ${{ secrets.BASESCAN_API_KEY }} --discord-webhook-url ${{ env.DISCORD_WEBHOOK_URL }} --git-token ${{ env.GIT_TOKEN }} --store-abi true
+          npm run deploy ${{ github.event.inputs.contract }} --rpc ${{ env.RPC_URL }} --pk ${{ secrets.PRIVATE_KEY }} --explorer-api-key ${{ env.EXPLORER_API_KEY }} --webhook-url ${{ secrets.WEBHOOK_URL }} --github-token ${{ secrets.GIT_TOKEN }} --store-abi true
         env:
-          NETWORK: ${{ github.event.inputs.network }}
-          CONTRACT: ${{ github.event.inputs.contract }}
-          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
           RPC_URL: ${{ env.RPC_URL }}
-          BASESCAN_API_KEY: ${{ secrets.BASESCAN_API_KEY }}
-          DISCORD_WEBHOOK_URL: ${{ env.DISCORD_WEBHOOK_URL }}
-          GIT_TOKEN: ${{ env.GIT_TOKEN }}
+          EXPLORER_API_KEY: ${{ env.EXPLORER_API_KEY }}
+
       - name: Prettier Fix
         run: bun run prettier:write
 

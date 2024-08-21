@@ -1,5 +1,9 @@
 {
   "dependencies": {
-    "@partydao/solidity-deploy": "https://github.com/PartyDAO/solidity-deploy.git#feat/store-abi-and-commit"
+    "@partydao/solidity-deploy": "https://github.com/PartyDAO/solidity-deploy.git#feat/store-abi-and-commit",
+    "ts-node": "^10.9.2"
+  },
+  "scripts": {
+    "deploy": "cd node_modules/@partydao/solidity-deploy && npm install && npx ts-node src/deploy.ts deploy"
   }
 }
